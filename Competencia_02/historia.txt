@@ -1,0 +1,52 @@
+09/11:
+. subida con database original sin ninguun analisis extra, 6 meses de entrenamiento , se rompio la maxina cuando estaba haciendo las subidas a kagle
+tardaba 10 minutos en cada optimizacion
+mejos best model  [I 2024-11-09 21:49:03,974] Trial 3 finished with value: 793695000.0 and parameters: {'num_leaves': 73, 'learning_rate': 0.14120161444869808, 'min_data_in_leaf': 1207, 'feature_fraction': 0.9165634884164622, 'bagging_fraction': 0.9271709233226466}. Best is trial 3 with value: 793.695.000
+
+Atencion, se hizo con la Semilla 1
+
+nombre de los archivos C2_CC_06_06_001
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10/11: 
+
+En una maquina virtua: database origina con 12 meses de training
+
+[I 2024-11-10 15:02:13,022] Trial 3 finished with value: 1174306000.0 and parameters: {'num_leaves': 76, 'learning_rate': 0.12122615959073862, 'min_data_in_leaf': 267, 'feature_fraction': 0.5042231205806844, 'bagging_fraction': 0.7843146336855336}. 
+
+Best is trial 3 with value: 1.174.306.000: 
+
+Mejor modelo: {'num_leaves': 76, 'learning_rate': 0.12122615959073862, 'min_data_in_leaf': 267, 'feature_fraction': 0.5042231205806844, 'bagging_fraction': 0.7843146336855336}
+
+#almacenamiento de los resultados
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v1.db"
+study_name = "exp_lgbm_v1_12meses"
+
+study = optuna.create_study(
+    direction="maximize",
+    study_name=study_name,
+    storage=storage_name,
+    load_if_exists=True,
+)
+
+feature	importance
+5	cliente_edad	2659
+0	numero_de_cliente	2332
+8	mrentabilidad_annual	2311
+135	Visa_Fvencimiento	2173
+113	Master_Fvencimiento	2137
+...	...	...
+105	catm_trx_other	107
+68	mtarjeta_visa_descuentos	103
+94	tcallcenter	100
+108	tmobile_app	99
+114	Master_Finiciomora	8
+
+Atencion se h izo con semilla 1
+
+nombre de los archivos C2_CC_12_12_001
+
+En otro maquina virtual: corri los datadrifting con 6 y 12 meses y guarde los archivos
+
+PASOS A SEGUIR. HACER MODELOS CON DEFLACION Y DATADRIFTING
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
