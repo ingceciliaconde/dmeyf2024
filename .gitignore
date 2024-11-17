@@ -182,3 +182,5 @@ project/target
 .worksheet
 
 .vscode/settings.json
+
+Competencia_02/.tmp/*.tmp
