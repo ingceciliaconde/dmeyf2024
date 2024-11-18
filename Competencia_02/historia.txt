@@ -12,7 +12,7 @@ nombre de los archivos C2_CC_06_06_001
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 10/11: 
 
-En una maquina virtua: database origina con 12 meses de training
+***En una maquina virtua: database origina con 12 meses de training
 
 [I 2024-11-10 15:02:13,022] Trial 3 finished with value: 1174306000.0 and parameters: {'num_leaves': 76, 'learning_rate': 0.12122615959073862, 'min_data_in_leaf': 267, 'feature_fraction': 0.5042231205806844, 'bagging_fraction': 0.7843146336855336}. 
 
@@ -121,11 +121,12 @@ feature	importance
 "C2_CC_12_DF_00{}.csv".
 
 
-- abro otra maquina virtual para empezar hacer el feature enginier
+*** abro otra maquina virtual para empezar hacer el feature enginier
 
 %%sql
 COPY competencia_02 TO '/home/ingceciliaconde/buckets/b1/datasets/competencia_02_fe_v1.csv.gz' (FORMAT CSV, HEADER TRUE);
- arranque con el archivo corregido por deflacion , con ventana 3 
+ arranque con el archivo corregido por deflacion (competencia_02_corregido_deflacion.csv) , con ventana 3 
+
 
 ***Optimizaciones modelo con features y 12 meses
   
@@ -136,3 +137,46 @@ study_name = "exp_lgbm_v5_12meses_fe_v1"
 
 [I 2024-11-17 19:49:46,570] Trial 0 finished with value: 1001364000.0 and parameters: {'num_leaves': 64, 'learning_rate': 0.2923813684601005, 'min_data_in_leaf': 495, 'feature_fraction': 0.6245548990464163, 'bagging_fraction': 0.652047440560122}. Best is trial 0 with value: 1.001.364.000
  [I 2024-11-17 22:41:46,350] Trial 7 finished with value: 802228000.0 and parameters: {'num_leaves': 91, 'learning_rate': 0.24834672468003044, 'min_data_in_leaf': 259, 'feature_fraction': 0.8127750020648584, 'bagging_fraction': 0.995403536692734}. Best is trial 3 with value: 1097208000.0.
+
+[I 2024-11-18 09:34:23,213] Trial 26 finished with value: 1090943000.0 and parameters: {'num_leaves': 76, 'learning_rate': 0.21834944864334124, 'min_data_in_leaf': 975, 'feature_fraction': 0.887362957766477, 'bagging_fraction': 0.21818969766956198}. Best is trial 14 with value: 1127434000.0.
+
+[I 2024-11-18 03:32:54,048] Trial 14 finished with value: 1127434000.0 and parameters: {'num_leaves': 80, 'learning_rate': 0.188236755684404, 'min_data_in_leaf': 1533, 'feature_fraction': 0.28030035172042733, 'bagging_fraction': 0.27600010045438145}. Best is trial 14 with value: 1127434000.0
+
+corro con la version  7 lbgbt a los modelos los llame  model_filename = f'lgb_v5_semilla{semilla}_{cantidad_meses_train}_{ventana}_fev1.txt'
+Modelo entrenado con semilla 100183 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v5_semilla100183_12_3_fev1.txt
+
+para levantar los modelos: # Definimos el patrón de nombre que esperamos para los archivos de modelos
+pattern = re.compile(r'^lgb_v5_semilla\d+_\d+_\d+_fev1\.txt$')
+
+ nombre_archivo = f"C2_CC_12_fev1_00{num_subida_kaggle}_semilla{semilla}.csv"
+        ruta_archivo = f"{exp_path}/{nombre_archivo}"
+        resultados.to_csv(ruta_archivo, index=False)
+        
+        mensaje = f'Archivo {nombre_archivo}. Modelo: semilla{semilla}, meses train {mes_train}, DF {ventana}, fev1,  corte: {envios}'
+
+
+Se me corto la subida a kaggle por exceso de subidas. PUDE SUBIR EL REPO DESE VM A GIT HUP ES EL LG6 COPY
+
+clave publica /home/ingceciliaconde/.ssh/id_ed25519
+
+
+*** Optimizacion data original,  12 meses y agrego las semillas
+
+guardo aca la optimizacion por que es la misma que la anterior solo que agrego las semillas
+#almacenamiento de los resultados
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v1.db"
+study_name = "exp_lgbm_v1_12meses"
+
+termine el scrip c02_7_lgb_avanzado en donde armo los modelos con mis 5 semillas y luego hago entregas con varios cortes 
+y al final hago un ensamble de probabilidad promedio .
+
+a los modelos los llame: f'lgb_v5_semilla{semilla}_{cantidad_meses_train}_{ventana
+
+ojo aca tuve que acomodar los index.
+
+los modelos por separado daban algo asi en promedio de menos de 100 y juntos el mayor llega a 112.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------18/11
+
+-maquina para optimizar optuna con todo los meses y el fe
+/home/ingceciliaconde/buckets/b1/datasets/competencia_02_fe_v1.csv.gz
