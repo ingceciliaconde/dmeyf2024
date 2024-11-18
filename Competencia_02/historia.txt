@@ -1,3 +1,6 @@
+Para ver memorio RAM y Swp o algo asi, ir a la maquina virtual apretar SSH. y escribir  htop en la terminal. Para salir Q (de quit) y enter
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 09/11:
 . subida con database original sin ninguun analisis extra, 6 meses de entrenamiento , se rompio la maxina cuando estaba haciendo las subidas a kagle
 tardaba 10 minutos en cada optimizacion
@@ -20,6 +23,7 @@ Mejor modelo: {'num_leaves': 76, 'learning_rate': 0.12122615959073862, 'min_data
 #almacenamiento de los resultados
 storage_name = "sqlite:///" + db_path + "optimization_lgbm_v1.db"
 study_name = "exp_lgbm_v1_12meses"
+
 
 study = optuna.create_study(
     direction="maximize",
@@ -50,3 +54,85 @@ En otro maquina virtual: corri los datadrifting con 6 y 12 meses y guarde los ar
 PASOS A SEGUIR. HACER MODELOS CON DEFLACION Y DATADRIFTING
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+17/11
+
+volvi a correr los datadrifting sin deflacion
+'competencia_02_preproceso_12_sin_deflacion.csv.gz'
+'competencia_02_preproceso_06_sin_deflacion.csv.gz'
+
+con 6 meses borre 5 variables
+con 12 meses 15 variables
+
+luego corri los mismos con deflacion
+'competencia_02_preproceso_12.csv.gz'
+'competencia_02_preproceso_06.csv.gz'
+
+***Optimizaciones de 6 meses y datadrifting
+
+luego corro modelo :
+#almacenamiento de los resultados
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v4.db"
+study_name = "exp_lgbm_v4_6meses"
+
+[I 2024-11-17 14:12:46,467] Trial 8 finished with value: 796663000.0 and parameters: {'num_leaves': 73, 'learning_rate': 0.20244403833459076, 'min_data_in_leaf': 1378, 'feature_fraction': 0.4935497076559394, 'bagging_fraction': 0.9241898985415062}. Best is trial 8 with value: 796663000.0.
+Training until validation scores don't improve for 81 rounds
+
+feature	importance
+5	cliente_edad	2776
+0	numero_de_cliente	2674
+132	Visa_Fvencimiento	2453
+8	mrentabilidad_annual	2417
+124	Master_fechaalta	2411
+...	...	...
+50	ccaja_seguridad	50
+13	tcuentas	50
+129	Visa_delinquency	49
+115	Master_msaldodolares	48
+42	minversion1_pesos	46
+
+'lgb_v2_6meses_solodrifting.txt'
+"C2_CC_06_DF_00{}.csv". f'Archivo {nombre_archivo}.LGBM meses train 6 meses, DF 6 meses sin deflacion, punto_corte: {envios}.'
+
+***Optimizaciones de 12 meses y datadrifting
+
+#almacenamiento de los resultados
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v3.db"
+study_name = "exp_lgbm_v3_12meses"
+
+[I 2024-11-17 14:12:48,019] Trial 7 finished with value: 1200535000.0 and parameters: {'num_leaves': 100, 'learning_rate': 0.10926946722384545, 'min_data_in_leaf': 1902, 'feature_fraction': 0.9093723182089234, 'bagging_fraction': 0.6967576093593978}. Best is trial 7 with value: 1.200.535.000
+
+
+feature	importance
+4	cliente_edad	4724
+98	ctrx_quarter	4420
+0	numero_de_cliente	4290
+114	Master_fechaalta	3918
+122	Visa_Fvencimiento	3842
+...	...	...
+113	Master_mpagosdolares	60
+80	mcheques_emitidos	59
+78	mcheques_depositados	57
+107	Master_mconsumosdolares	57
+92	ccajas_extracciones	53
+
+'lgb_v2_12meses_solodrifting.txt'
+
+
+"C2_CC_12_DF_00{}.csv".
+
+
+- abro otra maquina virtual para empezar hacer el feature enginier
+
+%%sql
+COPY competencia_02 TO '/home/ingceciliaconde/buckets/b1/datasets/competencia_02_fe_v1.csv.gz' (FORMAT CSV, HEADER TRUE);
+ arranque con el archivo corregido por deflacion , con ventana 3 
+
+***Optimizaciones modelo con features y 12 meses
+  
+con a competeneica_02_fe_v1  
+#almacenamiento de los resultados
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v5.db"
+study_name = "exp_lgbm_v5_12meses_fe_v1"
+
+[I 2024-11-17 19:49:46,570] Trial 0 finished with value: 1001364000.0 and parameters: {'num_leaves': 64, 'learning_rate': 0.2923813684601005, 'min_data_in_leaf': 495, 'feature_fraction': 0.6245548990464163, 'bagging_fraction': 0.652047440560122}. Best is trial 0 with value: 1.001.364.000
+ [I 2024-11-17 22:41:46,350] Trial 7 finished with value: 802228000.0 and parameters: {'num_leaves': 91, 'learning_rate': 0.24834672468003044, 'min_data_in_leaf': 259, 'feature_fraction': 0.8127750020648584, 'bagging_fraction': 0.995403536692734}. Best is trial 3 with value: 1097208000.0.
