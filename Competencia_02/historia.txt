@@ -132,8 +132,8 @@ COPY competencia_02 TO '/home/ingceciliaconde/buckets/b1/datasets/competencia_02
   
 con a competeneica_02_fe_v1  
 #almacenamiento de los resultados
-storage_name = "sqlite:///" + db_path + "optimization_lgbm_v5.db"
-study_name = "exp_lgbm_v5_12meses_fe_v1"
+
+
 
 [I 2024-11-17 19:49:46,570] Trial 0 finished with value: 1001364000.0 and parameters: {'num_leaves': 64, 'learning_rate': 0.2923813684601005, 'min_data_in_leaf': 495, 'feature_fraction': 0.6245548990464163, 'bagging_fraction': 0.652047440560122}. Best is trial 0 with value: 1.001.364.000
  [I 2024-11-17 22:41:46,350] Trial 7 finished with value: 802228000.0 and parameters: {'num_leaves': 91, 'learning_rate': 0.24834672468003044, 'min_data_in_leaf': 259, 'feature_fraction': 0.8127750020648584, 'bagging_fraction': 0.995403536692734}. Best is trial 3 with value: 1097208000.0.
@@ -176,7 +176,40 @@ ojo aca tuve que acomodar los index.
 
 los modelos por separado daban algo asi en promedio de menos de 100 y juntos el mayor llega a 112.
 
+CON 12 MESES DATA ORIGINAL VS FEATURE INGENIER CON DEFLACION TIENE MEJOR PUNTAJE EL DATA ORIGINAL
+
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------18/11
 
 -maquina para optimizar optuna con todo los meses y el fe
 /home/ingceciliaconde/buckets/b1/datasets/competencia_02_fe_v1.csv.gz
+
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v6.db"
+study_name = "exp_lgbm_v6_allmeses_fe_v1"
+
+Modelo entrenado con semilla 100183 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v6_semilla100183_30_3.txt
+Modelo entrenado con semilla 200003 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v6_semilla200003_30_3.txt
+Modelo entrenado con semilla 300017 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v6_semilla300017_30_3.txt
+Modelo entrenado con semilla 700001 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v6_semilla700001_30_3.txt
+Modelo entrenado con semilla 800011 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v6_semilla800011_30_3.txt
+Observamos variables mas importanes al modelo
+
+463	ctrx_lag_3_ctrx_quarter_slope_3	1428
+465	ctrx_lag_2_ctrx_quarter_1_slope_3	816
+467	ctrx_ctrx_quarter_media_3_slope_3	734
+5	cliente_edad	698
+457	ctrx_cliente_antiguedad_3_slope_3	689
+...	...	...
+97	chomebanking_transacciones	377
+252	ctrx_mcaja_ahorro_slope_3	377
+220	proporcion_financiacion_visa_cubierto	373
+443	ctrx_m_promedio_transferencias_recibidas_slope_3	362
+209	m_promedio_transferencias_recibidas	360
+100 rows × 2 columns
+
+
+*** optimizacion con data orginal y 30 meses #aun o cori
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v7.db"
+study_name = "exp_lgbm_v7_all_meses"
+
+
