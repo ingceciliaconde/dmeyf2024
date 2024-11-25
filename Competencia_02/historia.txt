@@ -208,8 +208,54 @@ Observamos variables mas importanes al modelo
 100 rows × 2 columns
 
 
-*** optimizacion con data orginal y 30 meses #aun o cori
+*** optimizacion con data orginal y 30 meses #aun o cori No lo corri
 storage_name = "sqlite:///" + db_path + "optimization_lgbm_v7.db"
 study_name = "exp_lgbm_v7_all_meses"
+
+--------------------------------------------------------------------------------------------
+23/11
+-Hice Backtesting
+-corri modelo pos y pre covid
+no mejoro
+-Hice Quality , pero debo mejorar
+
+#almacenamiento de los resultados
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v7.db"
+study_name = "exp_lgbm_v7_pre_post_pandemia_fe_v1"
+
+#corrida con 9 meses
+para luego hacer el dataquality
+Mejor cantidad de árboles para el mejor model 996
+Mejores parámetros para el mejor modelo {'num_leaves': 86, 'learning_rate': 0.2578452903443358, 'min_data_in_leaf': 1000, 'feature_fraction': 0.7160806041484926, 'bagging_fraction': 0.5381989739633521}
+
+5	cliente_edad	1770
+0	numero_de_cliente	1572
+242	ctrx_mrentabilidad_annual_slope_3	1261
+8	mrentabilidad_annual	1105
+16	mcuenta_corriente	952
+...	...	...
+306	ctrx_mcomisiones_mantenimiento_slope_3	321
+418	ctrx_m_caja_ahorro_total_slope_3	320
+23	ctarjeta_debito	314
+330	ctrx_thomebanking_slope_3	313
+243	ctrx_mcomisiones_slope_3	306
+
+
+#voy hacer el data quality  con 12 original
+cliente_edad	4822
+0	numero_de_cliente	4070
+89	ctrx_quarter	3787
+114	Visa_Fvencimiento	3468
+9	mcuenta_corriente	3253
+...	...	...
+70	mcheques_depositados	41
+32	cinversion2	40
+105	Master_mpagosdolares	36
+82	ccajas_depositos	31
+29	cinversion1	2
+
+Modelo entrenado con semilla 800011 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v1_QA_semilla800011_12_0.txt
+Observamos variables mas importanes al modelo
+
 
 
