@@ -17,4 +17,3 @@ El scrip envia a kaggle el archivo de cada semila con dada corte y luego calcula
 
   nombre_archivo = f"C2_CC_30_fev1_ensamblepromedio{num_subida_kaggle}.csv"
 
-  Elegi el que mas ganancia de mio.
