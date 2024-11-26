@@ -1,0 +1,261 @@
+Para ver memorio RAM y Swp o algo asi, ir a la maquina virtual apretar SSH. y escribir  htop en la terminal. Para salir Q (de quit) y enter
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+09/11:
+. subida con database original sin ninguun analisis extra, 6 meses de entrenamiento , se rompio la maxina cuando estaba haciendo las subidas a kagle
+tardaba 10 minutos en cada optimizacion
+mejos best model  [I 2024-11-09 21:49:03,974] Trial 3 finished with value: 793695000.0 and parameters: {'num_leaves': 73, 'learning_rate': 0.14120161444869808, 'min_data_in_leaf': 1207, 'feature_fraction': 0.9165634884164622, 'bagging_fraction': 0.9271709233226466}. Best is trial 3 with value: 793.695.000
+
+Atencion, se hizo con la Semilla 1
+
+nombre de los archivos C2_CC_06_06_001
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10/11: 
+
+***En una maquina virtua: database origina con 12 meses de training
+
+[I 2024-11-10 15:02:13,022] Trial 3 finished with value: 1174306000.0 and parameters: {'num_leaves': 76, 'learning_rate': 0.12122615959073862, 'min_data_in_leaf': 267, 'feature_fraction': 0.5042231205806844, 'bagging_fraction': 0.7843146336855336}. 
+
+Best is trial 3 with value: 1.174.306.000: 
+
+Mejor modelo: {'num_leaves': 76, 'learning_rate': 0.12122615959073862, 'min_data_in_leaf': 267, 'feature_fraction': 0.5042231205806844, 'bagging_fraction': 0.7843146336855336}
+
+#almacenamiento de los resultados
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v1.db"
+study_name = "exp_lgbm_v1_12meses"
+
+
+study = optuna.create_study(
+    direction="maximize",
+    study_name=study_name,
+    storage=storage_name,
+    load_if_exists=True,
+)
+
+feature	importance
+5	cliente_edad	2659
+0	numero_de_cliente	2332
+8	mrentabilidad_annual	2311
+135	Visa_Fvencimiento	2173
+113	Master_Fvencimiento	2137
+...	...	...
+105	catm_trx_other	107
+68	mtarjeta_visa_descuentos	103
+94	tcallcenter	100
+108	tmobile_app	99
+114	Master_Finiciomora	8
+
+Atencion se h izo con semilla 1
+
+nombre de los archivos C2_CC_12_12_001
+
+En otro maquina virtual: corri los datadrifting con 6 y 12 meses y guarde los archivos
+
+PASOS A SEGUIR. HACER MODELOS CON DEFLACION Y DATADRIFTING
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+17/11
+
+volvi a correr los datadrifting sin deflacion
+'competencia_02_preproceso_12_sin_deflacion.csv.gz'
+'competencia_02_preproceso_06_sin_deflacion.csv.gz'
+
+con 6 meses borre 5 variables
+con 12 meses 15 variables
+
+luego corri los mismos con deflacion
+'competencia_02_preproceso_12.csv.gz'
+'competencia_02_preproceso_06.csv.gz'
+
+***Optimizaciones de 6 meses y datadrifting
+
+luego corro modelo :
+#almacenamiento de los resultados
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v4.db"
+study_name = "exp_lgbm_v4_6meses"
+
+[I 2024-11-17 14:12:46,467] Trial 8 finished with value: 796663000.0 and parameters: {'num_leaves': 73, 'learning_rate': 0.20244403833459076, 'min_data_in_leaf': 1378, 'feature_fraction': 0.4935497076559394, 'bagging_fraction': 0.9241898985415062}. Best is trial 8 with value: 796663000.0.
+Training until validation scores don't improve for 81 rounds
+
+feature	importance
+5	cliente_edad	2776
+0	numero_de_cliente	2674
+132	Visa_Fvencimiento	2453
+8	mrentabilidad_annual	2417
+124	Master_fechaalta	2411
+...	...	...
+50	ccaja_seguridad	50
+13	tcuentas	50
+129	Visa_delinquency	49
+115	Master_msaldodolares	48
+42	minversion1_pesos	46
+
+'lgb_v2_6meses_solodrifting.txt'
+"C2_CC_06_DF_00{}.csv". f'Archivo {nombre_archivo}.LGBM meses train 6 meses, DF 6 meses sin deflacion, punto_corte: {envios}.'
+
+***Optimizaciones de 12 meses y datadrifting
+
+#almacenamiento de los resultados
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v3.db"
+study_name = "exp_lgbm_v3_12meses"
+
+[I 2024-11-17 14:12:48,019] Trial 7 finished with value: 1200535000.0 and parameters: {'num_leaves': 100, 'learning_rate': 0.10926946722384545, 'min_data_in_leaf': 1902, 'feature_fraction': 0.9093723182089234, 'bagging_fraction': 0.6967576093593978}. Best is trial 7 with value: 1.200.535.000
+
+
+feature	importance
+4	cliente_edad	4724
+98	ctrx_quarter	4420
+0	numero_de_cliente	4290
+114	Master_fechaalta	3918
+122	Visa_Fvencimiento	3842
+...	...	...
+113	Master_mpagosdolares	60
+80	mcheques_emitidos	59
+78	mcheques_depositados	57
+107	Master_mconsumosdolares	57
+92	ccajas_extracciones	53
+
+'lgb_v2_12meses_solodrifting.txt'
+
+
+"C2_CC_12_DF_00{}.csv".
+
+
+*** abro otra maquina virtual para empezar hacer el feature enginier
+
+%%sql
+COPY competencia_02 TO '/home/ingceciliaconde/buckets/b1/datasets/competencia_02_fe_v1.csv.gz' (FORMAT CSV, HEADER TRUE);
+ arranque con el archivo corregido por deflacion (competencia_02_corregido_deflacion.csv) , con ventana 3 
+
+
+***Optimizaciones modelo con features y 12 meses
+  
+con a competeneica_02_fe_v1  
+#almacenamiento de los resultados
+
+
+
+[I 2024-11-17 19:49:46,570] Trial 0 finished with value: 1001364000.0 and parameters: {'num_leaves': 64, 'learning_rate': 0.2923813684601005, 'min_data_in_leaf': 495, 'feature_fraction': 0.6245548990464163, 'bagging_fraction': 0.652047440560122}. Best is trial 0 with value: 1.001.364.000
+ [I 2024-11-17 22:41:46,350] Trial 7 finished with value: 802228000.0 and parameters: {'num_leaves': 91, 'learning_rate': 0.24834672468003044, 'min_data_in_leaf': 259, 'feature_fraction': 0.8127750020648584, 'bagging_fraction': 0.995403536692734}. Best is trial 3 with value: 1097208000.0.
+
+[I 2024-11-18 09:34:23,213] Trial 26 finished with value: 1090943000.0 and parameters: {'num_leaves': 76, 'learning_rate': 0.21834944864334124, 'min_data_in_leaf': 975, 'feature_fraction': 0.887362957766477, 'bagging_fraction': 0.21818969766956198}. Best is trial 14 with value: 1127434000.0.
+
+[I 2024-11-18 03:32:54,048] Trial 14 finished with value: 1127434000.0 and parameters: {'num_leaves': 80, 'learning_rate': 0.188236755684404, 'min_data_in_leaf': 1533, 'feature_fraction': 0.28030035172042733, 'bagging_fraction': 0.27600010045438145}. Best is trial 14 with value: 1127434000.0
+
+corro con la version  7 lbgbt a los modelos los llame  model_filename = f'lgb_v5_semilla{semilla}_{cantidad_meses_train}_{ventana}_fev1.txt'
+Modelo entrenado con semilla 100183 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v5_semilla100183_12_3_fev1.txt
+
+para levantar los modelos: # Definimos el patrón de nombre que esperamos para los archivos de modelos
+pattern = re.compile(r'^lgb_v5_semilla\d+_\d+_\d+_fev1\.txt$')
+
+ nombre_archivo = f"C2_CC_12_fev1_00{num_subida_kaggle}_semilla{semilla}.csv"
+        ruta_archivo = f"{exp_path}/{nombre_archivo}"
+        resultados.to_csv(ruta_archivo, index=False)
+        
+        mensaje = f'Archivo {nombre_archivo}. Modelo: semilla{semilla}, meses train {mes_train}, DF {ventana}, fev1,  corte: {envios}'
+
+
+Se me corto la subida a kaggle por exceso de subidas. PUDE SUBIR EL REPO DESE VM A GIT HUP ES EL LG6 COPY
+
+clave publica /home/ingceciliaconde/.ssh/id_ed25519
+
+
+*** Optimizacion data original,  12 meses y agrego las semillas
+
+guardo aca la optimizacion por que es la misma que la anterior solo que agrego las semillas
+#almacenamiento de los resultados
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v1.db"
+study_name = "exp_lgbm_v1_12meses"
+
+termine el scrip c02_7_lgb_avanzado en donde armo los modelos con mis 5 semillas y luego hago entregas con varios cortes 
+y al final hago un ensamble de probabilidad promedio .
+
+a los modelos los llame: f'lgb_v5_semilla{semilla}_{cantidad_meses_train}_{ventana
+
+ojo aca tuve que acomodar los index.
+
+los modelos por separado daban algo asi en promedio de menos de 100 y juntos el mayor llega a 112.
+
+CON 12 MESES DATA ORIGINAL VS FEATURE INGENIER CON DEFLACION TIENE MEJOR PUNTAJE EL DATA ORIGINAL
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------18/11
+
+-maquina para optimizar optuna con todo los meses y el fe
+/home/ingceciliaconde/buckets/b1/datasets/competencia_02_fe_v1.csv.gz
+
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v6.db"
+study_name = "exp_lgbm_v6_allmeses_fe_v1"
+
+Modelo entrenado con semilla 100183 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v6_semilla100183_30_3.txt
+Modelo entrenado con semilla 200003 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v6_semilla200003_30_3.txt
+Modelo entrenado con semilla 300017 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v6_semilla300017_30_3.txt
+Modelo entrenado con semilla 700001 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v6_semilla700001_30_3.txt
+Modelo entrenado con semilla 800011 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v6_semilla800011_30_3.txt
+Observamos variables mas importanes al modelo
+
+463	ctrx_lag_3_ctrx_quarter_slope_3	1428
+465	ctrx_lag_2_ctrx_quarter_1_slope_3	816
+467	ctrx_ctrx_quarter_media_3_slope_3	734
+5	cliente_edad	698
+457	ctrx_cliente_antiguedad_3_slope_3	689
+...	...	...
+97	chomebanking_transacciones	377
+252	ctrx_mcaja_ahorro_slope_3	377
+220	proporcion_financiacion_visa_cubierto	373
+443	ctrx_m_promedio_transferencias_recibidas_slope_3	362
+209	m_promedio_transferencias_recibidas	360
+100 rows × 2 columns
+
+
+*** optimizacion con data orginal y 30 meses #aun o cori No lo corri
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v7.db"
+study_name = "exp_lgbm_v7_all_meses"
+
+--------------------------------------------------------------------------------------------
+23/11
+-Hice Backtesting
+-corri modelo pos y pre covid
+no mejoro
+-Hice Quality , pero debo mejorar
+
+#almacenamiento de los resultados
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v7.db"
+study_name = "exp_lgbm_v7_pre_post_pandemia_fe_v1"
+
+#corrida con 9 meses
+para luego hacer el dataquality
+Mejor cantidad de árboles para el mejor model 996
+Mejores parámetros para el mejor modelo {'num_leaves': 86, 'learning_rate': 0.2578452903443358, 'min_data_in_leaf': 1000, 'feature_fraction': 0.7160806041484926, 'bagging_fraction': 0.5381989739633521}
+
+5	cliente_edad	1770
+0	numero_de_cliente	1572
+242	ctrx_mrentabilidad_annual_slope_3	1261
+8	mrentabilidad_annual	1105
+16	mcuenta_corriente	952
+...	...	...
+306	ctrx_mcomisiones_mantenimiento_slope_3	321
+418	ctrx_m_caja_ahorro_total_slope_3	320
+23	ctarjeta_debito	314
+330	ctrx_thomebanking_slope_3	313
+243	ctrx_mcomisiones_slope_3	306
+
+
+#voy hacer el data quality  con 12 original
+cliente_edad	4822
+0	numero_de_cliente	4070
+89	ctrx_quarter	3787
+114	Visa_Fvencimiento	3468
+9	mcuenta_corriente	3253
+...	...	...
+70	mcheques_depositados	41
+32	cinversion2	40
+105	Master_mpagosdolares	36
+82	ccajas_depositos	31
+29	cinversion1	2
+
+Modelo entrenado con semilla 800011 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v1_QA_semilla800011_12_0.txt
+Observamos variables mas importanes al modelo
+
+
+
