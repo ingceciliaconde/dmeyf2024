@@ -257,5 +257,13 @@ cliente_edad	4822
 Modelo entrenado con semilla 800011 y guardado en /home/ingceciliaconde/buckets/b1/datasets/lgb_v1_QA_semilla800011_12_0.txt
 Observamos variables mas importanes al modelo
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Competencia 03
+
+-Voy a arrancar optimizando el modelo con 9  meses  inclluyende la ultima data.  voy a tratar de dejarlo bastatne y hacer muchas semilas.
+
+storage_name = "sqlite:///" + db_path + "optimization_lgbm_v9.db"
+study_name = "exp_lgbm_v9_10meses_fe_v1"
 
 
