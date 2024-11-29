@@ -15,10 +15,10 @@ envg$EXPENV$bucket_dir <- "~/buckets/b1"
 envg$EXPENV$exp_dir <- "~/buckets/b1/expw/"
 envg$EXPENV$wf_dir <- "~/buckets/b1/flow/"
 envg$EXPENV$repo_dir <- "~/dmeyf2024/"
-envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/"
+envg$EXPENV$datasets_dir <- "~/buckets/b1/datasets/03"
 envg$EXPENV$messenger <- "~/install/zulip_enviar.sh"
 
-envg$EXPENV$semilla_primigenia <- 102191
+envg$EXPENV$semilla_primigenia <- 100183
 
 # leo el unico parametro del script
 args <- commandArgs(trailingOnly=TRUE)
@@ -267,16 +267,24 @@ TS_strategy_base8 <- function( pinputexps )
   param_local$meta$script <- "/src/wf-etapas/z2101_TS_training_strategy.r"
 
 
-  param_local$future <- c(202108)
+  param_local$future <- c(202109)
 
   param_local$final_train$undersampling <- 1.0
   param_local$final_train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
-  param_local$final_train$training <- c(202106, 202105, 202104,
-    202103, 202102, 202101)
+  param_local$final_train$training <- c(202107, 202106, 202105, 
+                                        #202104, 202103, 
+                                        202102, 202101, 
+                                        202012, 202011, 202010, 202009, 202008, 202007, 
+                                        # 202006  Excluyo por variables rotas
+                                        202005, 202004, 202003, 202002, 202001,
+                                        201912, 201911,
+                                        # 201910 Excluyo por variables rotas
+                                        201909, 201908, 201907, 201906,
+                                        # 201905  Excluyo por variables rotas
+                                        201904, 201903)
 
 
-  param_local$train$training <- c(202104, 202103, 202102,
-    202101, 202012, 202011)
+  param_local$train$training <- c(202106)
   param_local$train$validation <- c(202105)
   param_local$train$testing <- c(202106)
 
@@ -409,7 +417,7 @@ KA_evaluate_kaggle <- function( pinputexps )
   param_local$envios_desde <-   9000L
   param_local$envios_hasta <-  13000L
   param_local$envios_salto <-   500L
-  param_local$competition <- "dm-ey-f-2024-segunda"
+  param_local$competition <- "dm-ey-f-2024-tercera"
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -420,12 +428,12 @@ KA_evaluate_kaggle <- function( pinputexps )
 # Este es el  Workflow Baseline
 # Que predice 202108 donde NO conozco la clase
 
-wf_agosto <- function( pnombrewf )
+wf_septiembre <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea workflow inicial fija
 
   # Etapa especificacion dataset de la Segunda Competencia Kaggle
-  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_02.csv.gz")
+  DT_incorporar_dataset( "~/buckets/b1/datasets/competencia_03.csv.gz")
 
   # Etapas preprocesamiento
   CA_catastrophe_base( metodo="MachineLearning")
@@ -443,11 +451,19 @@ wf_agosto <- function( pnombrewf )
 
   # Etapas modelado
   ts8 <- TS_strategy_base8()
-  ht <- HT_tuning_base( bo_iteraciones = 40 )  # iteraciones inteligentes
+  
+  ht <- HT_tuning_base( semillero=25, bo_iteraciones = 40 )  # iteraciones inteligentes
 
   # Etapas finales
-  fm <- FM_final_models_lightgbm( c(ht, ts8), ranks=c(1), qsemillas=5 )
+  fm <- FM_final_models_lightgbm(
+    c(ht, ts8),
+    ranks=c(1),
+    semillerio = 50,     # cantidad de semillas finales,
+    repeticiones_exp = 1  # cantidad de repeticiones del semillerio
+  )
+  
   SC_scoring( c(fm, ts8) )
+  
   KA_evaluate_kaggle()  # genera archivos para Kaggle
 
   return( exp_wf_end() ) # linea workflow final fija
@@ -456,6 +472,6 @@ wf_agosto <- function( pnombrewf )
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
 
-# llamo al workflow con future = 202108
-wf_agosto()
+# llamo al workflow con future = 202109
+wf_septiembre()
 
